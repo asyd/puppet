@@ -11,7 +11,10 @@ class common::debian {
 		file { "/var/local/preseed/$name.preseed":
 			ensure => present,
 			require => File['/var/local/preseed'],
-			content => template($source)
+			content => template($source),
+			owner => root,
+			group => root,
+			mode => 400
 		}
 
 		package { "$name":

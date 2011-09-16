@@ -1,9 +1,9 @@
 class mysql::server {
 	include common::debian
 	include nrpe::base
+	include smtp::postfix-base
 
-#	$mysql_root_password = extlookup('mysql_root_password')
-#	$mysql_root_password = generate('/etc/puppet/scripts/makepasswd')
+	$mysql_root_password = generate("/etc/puppet/scripts/makepasswd",$fqdn,"mysql")
 	$mysql_nrpe_password = extlookup('mysql_nrpe_password')
 	
 	common::debian::preseed_package { "mysql-server-5.1":
@@ -12,8 +12,9 @@ class mysql::server {
 	}
 
 	exec { notify-password:
-		command => "/bin/echo \"MySQL root password on $fqdn: $mysql_root_password\" | mail -s 'MySQL root password' bbonfils@gmail.com",
-		refreshonly => true
+		command => "/bin/echo \"MySQL root password on $fqdn: $mysql_root_password\" | mail -s 'puppet password' support@nnx.com",
+		refreshonly => true,
+		require => Class['smtp::postfix-base']
 	}
 
 	file { '/etc/nagios/.my.cnf':

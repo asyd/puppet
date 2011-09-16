@@ -1,3 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-/usr/bin/makepasswd | /usr/bin/tr -d '\n'
+MASTERPASSWORD=zs2tlLulbvX4M
+HOST=$1
+SERVICE=$2
+
+echo ${MASTERPASSWORD}${HOST}${SERVICE} | openssl dgst -sha -hex | tr '[1234]' '[!;@,]' | cut -c 1-12 | tr -d '\n'
