@@ -8,16 +8,16 @@ class common::debian {
         }
 
 	define preseed_package ($ensure, $source) {
-		file { '/var/local/preseed/$name.preseed':
+		file { "/var/local/preseed/$name.preseed":
 			ensure => present,
 			require => File['/var/local/preseed'],
 			content => template($source)
 		}
 
-		package { $name:
+		package { "$name":
 			ensure => installed,
-			require => File['/var/local/preseed/$name.preseed'],
-			responsefile => '/var/local/preseed/$name.preseed'
+			require => File["/var/local/preseed/$name.preseed"],
+			responsefile => "/var/local/preseed/$name.preseed"
 		}
 	}
 }
