@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+type=$1
+typeset -i sum=0
+
+for letter in ${(s::)2} ; 
+do
+	sum+=$(( #letter ))
+done
+
+if [[ $type == "hour" ]]; then
+	echo -n $(($sum % 24))
+elif [[ $type == "minute" ]]; then
+	echo -n $(($sum % 60))
+else
+	exit 1
+fi

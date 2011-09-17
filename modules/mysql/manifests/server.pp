@@ -3,8 +3,8 @@ class mysql::server {
 	include nrpe::base
 	include smtp::postfix-base
 
-	$mysql_root_password = generate("/etc/puppet/scripts/makepasswd",$fqdn,"mysql")
-	$mysql_nrpe_password = extlookup('mysql_nrpe_password')
+	$mysql_root_password = generate("/etc/puppet/scripts/makepasswd",extlookup("master_password"),$fqdn,"mysql")
+	$mysql_nrpe_password = generate("/etc/puppet/scripts/makepasswd",extlookup("master_password"),$fqdn,"mysqlnrpe")
 	
 	common::debian::preseed_package { "mysql-server-5.1":
 		ensure => present,
@@ -15,6 +15,13 @@ class mysql::server {
 		command => "/bin/echo \"MySQL root password on $fqdn: $mysql_root_password\" | mail -s 'puppet password' support@nnx.com",
 		refreshonly => true,
 		require => Class['smtp::postfix-base']
+	}
+	
+	exec { mysql-nrpe-user:
+		command => "/usr/bin/mysql -e \"GRANT SELECT ON mysql.* TO nrpe@'localhost' IDENTIFIED BY '$mysql_nrpe_password'\"",
+		unless =>  "/usr/bin/mysql -e \"SELECT DISTINCT(user) FROM mysql.user\" | /bin/grep nrpe",
+		require => File['/root/.my.cnf']
+
 	}
 
 	file { '/etc/nagios/.my.cnf':
