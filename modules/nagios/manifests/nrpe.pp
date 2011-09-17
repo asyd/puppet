@@ -1,4 +1,4 @@
-class nrpe::base {
+class nagios::nrpe {
 	$packagesList = [ 'nagios-plugins-standard', 'nagios-nrpe-server' ]
 	$nrpe_allowed_hosts = extlookup('nrpe_allowed_hosts')
 
@@ -12,7 +12,7 @@ class nrpe::base {
 	file { '/etc/nagios/nrpe_local.cfg':
 		 notify => Service['nagios-nrpe-server'],
 		 require => Package['nagios-nrpe-server'],
-		 content => template('nrpe/nrpe-local.cfg.erb'),
+		 content => template('nagios/nrpe-local.cfg.erb'),
 		 owner => nagios,
 		 group => nagios,
 		 mode => 644

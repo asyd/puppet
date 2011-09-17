@@ -1,6 +1,6 @@
 class mysql::server {
 	include common::debian
-	include nrpe::base
+	include nagios::nrpe
 	include smtp::postfix-base
 
 	$mysql_root_password = generate("/etc/puppet/scripts/makepasswd",extlookup("master_password"),$fqdn,"mysql")
