@@ -33,4 +33,11 @@ class mysql::server {
 		content => template('mysql/root-my-cnf.erb'),
 		notify => Exec['notify-password']
 	}
+
+	file { '/etc/nagios/nrpe.d/mysql':
+		owner => root,
+		group => root,
+		mode => 644,
+		content => "command[check_mysql]=env HOME=/etc/nagios /usr/lib/nagios/plugins/check_mysql"
+	}
 }
