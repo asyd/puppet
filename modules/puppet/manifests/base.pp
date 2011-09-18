@@ -11,7 +11,10 @@ class puppet::base {
 	}
 
 	cron { "puppet":
-	        ensure  => present,
+	        ensure  => $puppet_interval ? {
+			'none' => absent,
+			default => present
+		},
 	        command => "/usr/sbin/puppetd --onetime --no-daemonize --logdest syslog > /dev/null 2>&1",
 	        user    => 'root',
 	        minute  => $minutes,
